@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assesment 2</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div id="studentData"></div>
+
+<script>
+$(document).ready(function(){
+    $.ajax({
+        url: 'get_students.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response){
+            var data = response;
+
+            var table = '<table border="1">';
+            table += '<tr><th>ID</th><th>Nama</th><th>Nim</th><th>Grade</th><th>Action</th></tr>';
+            for(var i=0; i<data.length; i++){
+                table += '<tr>';
+                table += '<td>'+data[i].id+'</td>';
+                table += '<td>'+data[i].nama+'</td>';
+                table += '<td>'+data[i].nim+'</td>';
+                table += '<td>'+data[i].grade+'</td>';
+                table += '<td><button class="deleteBtn" data-id="'+data[i].id+'">Delete</button></td>';
+                table += '</tr>';
+            }
+            table += '</table>';
+
+            $('#studentData').html(table);
+
+            $('.deleteBtn').click(function(){
+                var idToDelete = $(this).data('id');
+                $.ajax({
+                    url: 'delete_students.php?id='+idToDelete, 
+                    type: 'GET',
+                    success: function(response){
+                        location.reload();
+                    },
+                    error: function(xhr, status, error){
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        },
+        error: function(xhr, status, error){
+            console.log(xhr.responseText);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
